@@ -20,5 +20,5 @@ python snake.py [args]
 |`--scorecolor`, `-TC`|3|Score text color as R G B|Integer|`127 127 127`|
 |`--wallcolor`, `-WC`|3|Wall color as R G B, only applies in wall mode|Integer|`255 255 255`|
 |`--tick`, `-T`|1|Time between each game tick in seconds|Float|`0.1`|
-|`--gamemode`, `-GT`|1|Game mode (Modes: `normal`, `warp`, `wall`)|String|`normal`|
+|`--gamemode`, `-GM`|1|Game mode (Modes: `normal`, `warp`, `wall`)|String|`normal`|
 |`--hidescore`, `-HS`|0|Hide score counter|Boolean|`False`|
