@@ -8,6 +8,9 @@ A simple snake game written in Python.
 python snake.py [args]
 ```
 
+### Gameplay
+WASD / Arrow keys for snake movement, R for restart.
+
 ### Command Line Arguments
 |Argument|Subargument Amount|Description|Type|Default Value|
 |-|-|-|-|-|
