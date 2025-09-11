@@ -42,3 +42,4 @@ WASD / Arrow keys for snake movement, R for restart.
         - Size, font, score
 - Customization GUI?
 - Customization presets?
+- Compiled binaries?
