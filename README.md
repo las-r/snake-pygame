@@ -42,4 +42,6 @@ WASD / Arrow keys for snake movement, R for restart.
         - Size, font?, text
 - Customization GUI?
 - Customization presets?
+    - Premade sets?
+    - Custom sets
 - Sounds
