@@ -25,3 +25,20 @@ WASD / Arrow keys for snake movement, R for restart.
 |`--tick`, `-T`|1|Time between each game tick in seconds|Float|`0.1`|
 |`--gamemode`, `-GM`|1|Game mode (Modes: `normal`, `warp`, `wall`)|String|`normal`|
 |`--hidescore`, `-HS`|0|Hide score counter|Boolean|`False`|
+
+## Planned Features
+- More gamemodes
+    - Local multiplayer
+        - 2 and maybe 3? or 4? players
+    - Self phasing
+    - Teleport
+    - Flashlight?
+    - Spotlight
+- Multiple gamemodes stacked
+- More customization
+    - Apple count
+    - Player count?
+    - Score text
+        - Size, font, score
+- Customization GUI?
+- Customization presets?
