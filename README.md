@@ -39,7 +39,7 @@ WASD / Arrow keys for snake movement, R for restart.
     - Apple count
     - Player count?
     - Score text
-        - Size, font, score
+        - Size, font?, text
 - Customization GUI?
 - Customization presets?
 - Compiled binaries?
