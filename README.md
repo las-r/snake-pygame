@@ -9,7 +9,17 @@ python snake.py [args]
 ```
 
 ### Gameplay
-WASD / Arrow keys for snake movement, R for restart.
+- **WASD / Arrow keys** — move the snake
+- **R** — restart the game
+- **Space** — pause/unpause (unless disabled) 
+
+#### Game Modifiers
+|Modifier|Effect|
+|-|-|
+|incspeed|Decrements the tick delay by 5% upon eating an apple.|
+|passthrough|Allows the snake to pass through itself.|
+|wall|Makes a wall spawn at a random location upon eating an apple.|
+|warp|Makes the borders teleport you to the other side.|
 
 ### Command Line Arguments
 |Argument|Subargument Amount|Description|Type|Default Value|
@@ -20,30 +30,28 @@ WASD / Arrow keys for snake movement, R for restart.
 |`--snakecolor`, `-SC`|3|Snake body color as R G B|Integer|`0 127 0`|
 |`--applecolor`, `-AC`|3|Apple color as R G B|Integer|`255 0 0`|
 |`--bgcolor`, `-BC`|3|Background color as R G B|Integer|`0 0 0`|
-|`--scorecolor`, `-TC`|3|Score text color as R G B|Integer|`127 127 127`|
-|`--wallcolor`, `-WC`|3|Wall color as R G B, only applies in wall mode|Integer|`255 255 255`|
+|`--textcolor`, `-TC`|3|Text color as R G B|Integer|`127 127 127`|
+|`--wallcolor`, `-WC`|3|Wall color as R G B|Integer|`255 255 255`|
+|`--scoretext`, `-ST`|1|Score text with `+s+` as value|String|`Score: ~s~`|
+|`--appleamount`, `-AA`|1|Amount of apples at once|Integer|`1`|
 |`--tick`, `-T`|1|Time between each game tick in seconds|Float|`0.1`|
-|`--gamemode`, `-GM`|1|Game mode (Modes: `normal`, `warp`, `wall`)|String|`normal`|
+|`--gamemods`, `-GM`|*|Space-separated list of game modifers|String|`None`|
 |`--hidescore`, `-HS`|0|Hide score counter|Boolean|`False`|
 
 ## Planned Features
-- More gamemodes
-    - Local multiplayer
-        - 2 and maybe 3? or 4? players
-    - Self phasing
-    - Teleport
-    - Flashlight?
-    - Spotlight
-- Multiple gamemodes stacked
+## Planned Features
+- More game modifiers
+  - Local multiplayer (2–4 players)
+  - Teleport
+  - Flashlight / Spotlight modes
 - More customization
-    - Apple count
-    - Player count?
-    - Score text
-        - Size, font?, text
-- Customization GUI?
-- Customization presets?
-    - Premade sets?
-    - Custom sets
+  - Player count
+  - Score text options (size, font)
+  - Keybinds
+- Customization GUI and presets
+  - Premade sets
+  - Custom sets
 - Sounds
 - Highscore system
-    - Save highscore per customization set
+  - Save highscores per customization set
+- Debug mode
