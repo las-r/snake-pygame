@@ -45,3 +45,5 @@ WASD / Arrow keys for snake movement, R for restart.
     - Premade sets?
     - Custom sets
 - Sounds
+- Highscore system
+    - Save highscore per customization set
