@@ -39,7 +39,6 @@ python snake.py [args]
 |`--hidescore`, `-HS`|0|Hide score counter|Boolean|`False`|
 
 ## Planned Features
-## Planned Features
 - More game modifiers
   - Local multiplayer (2–4 players)
   - Teleport
