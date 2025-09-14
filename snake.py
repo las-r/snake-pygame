@@ -4,7 +4,7 @@ import random
 import time
 
 # made by las-r on github
-# v1.2
+# v1.2.1
 
 # init pygame
 pygame.init()
@@ -19,11 +19,11 @@ prsr.add_argument("-GS", "--gridsize", type=int, nargs=2, default=[40, 30], help
 prsr.add_argument("-SHC", "--snakeheadcolor", type=int, nargs=3, default=[0, 191, 0], help="Snake head color as R G B (default: 0 191 0)")
 prsr.add_argument("-SC", "--snakecolor", type=int, nargs=3, default=[0, 127, 0], help="Snake body color as R G B (default: 0 127 0)")
 prsr.add_argument("-AC", "--applecolor", type=int, nargs=3, default=[255, 0, 0], help="Apple color as R G B (default: 255 0 0)")
-prsr.add_argument("-AA", "--appleamount", type=int, default=1, help="Amount of apples at once (default: 1)")
-prsr.add_argument("-BC", "--bgcolor", type=int, nargs=3, default=[0, 0, 0], help="Background color aas R G B (default: 0 0 0)")
+prsr.add_argument("-BC", "--bgcolor", type=int, nargs=3, default=[0, 0, 0], help="Background color as R G B (default: 0 0 0)")
 prsr.add_argument("-TC", "--textcolor", type=int, nargs=3, default=[127, 127, 127], help="Text color as R G B (default: 127 127 127)")
 prsr.add_argument("-WC", "--wallcolor", type=int, nargs=3, default=[255, 255, 255], help="Wall color as R G B, only applies in wall mode (default: 255 255 255)")
-prsr.add_argument("-ST", "--scoretext", default="Score: +s+", help="Score text with '+s+' as number (default: 'Score: ~s~')")
+prsr.add_argument("-ST", "--scoretext", default="Score: +s+", help="Score text with '+s+' as value (default: 'Score: ~s~')")
+prsr.add_argument("-AA", "--appleamount", type=int, default=1, help="Amount of apples at once (default: 1)")
 prsr.add_argument("-T", "--tick", type=float, default=0.1, help="Time between each game tick in seconds (default: 0.1)")
 prsr.add_argument("-GM", "--gamemods", nargs="*", default=[], help="Game modifers (default: None)")
 prsr.add_argument("-HS", "--hidescore", action="store_true", help="Hide score counter")
