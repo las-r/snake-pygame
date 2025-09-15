@@ -9,9 +9,9 @@ python snake.py [args]
 ```
 
 ### Gameplay
-- **WASD / Arrow keys** — move the snake
-- **R** — restart the game
-- **Space** — pause/unpause (unless disabled) 
+- **WASD / Arrow keys**: move the snake
+- **R**: restart the game
+- **Space**: pause/unpause (unless disabled) 
 
 #### Game Modifiers
 |Modifier|Effect|
