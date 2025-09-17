@@ -43,6 +43,7 @@ python snake.py [args]
   - Local multiplayer (2–4 players)
   - Teleport
   - Flashlight / Spotlight modes
+  - Portals
 - More customization
   - Player count
   - Score text options (size, font)
@@ -54,3 +55,4 @@ python snake.py [args]
 - Highscore system
   - Save highscores per customization set
 - Debug mode
+- Config file?
