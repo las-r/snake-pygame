@@ -47,8 +47,8 @@ python snake.py [args]
 | `--appleamount`, `-AA` | 1 | Amount of apples at once | Integer | `1` |
 | `--deathdelay`, `-DD` | 1 | Pause after snake death (ms) | Integer | `1000` |
 | `--tick`, `-T` | 1 | Time between each game tick (seconds) | Float | `0.1` |
-| `--preset`, `-P` | 1 | Load a preset of arguments | String | `""` (empty / None) |
-| `--gamemods`, `-GM` | * | Space-separated list of game modifiers | String | `[]` (None) |
+| `--preset`, `-P` | 1 | Load a preset of arguments | String | `None` |
+| `--gamemods`, `-GM` | * | Space-separated list of game modifiers | String | `None` |
 | `--hidescore`, `-HS` | 0 | Hide score counter | Boolean | `False` |
 | `--showtick`, `-ST` | 0 | Show current tick speed | Boolean | `False` |
 
