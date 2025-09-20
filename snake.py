@@ -2,10 +2,9 @@ import argparse
 import pygame
 import random
 import sys
-import time
 
 # made by las-r on github
-# v1.3
+# v1.4
 
 # init pygame
 pygame.init()
@@ -19,82 +18,131 @@ prsr.add_argument("-DS", "--displaysize", type=int, nargs=2, default=[800, 600],
 prsr.add_argument("-GS", "--gridsize", type=int, nargs=2, default=[40, 30], help="Game grid dimensions (default: 40 30)")
 prsr.add_argument("-SHC", "--snakeheadcolor", type=int, nargs=3, default=[0, 191, 0], help="Snake head color as R G B (default: 0 191 0)")
 prsr.add_argument("-SC", "--snakecolor", type=int, nargs=3, default=[0, 127, 0], help="Snake body color as R G B (default: 0 127 0)")
+prsr.add_argument("-S2HC", "--snake2headcolor", type=int, nargs=3, default=[0, 0, 191], help="Snake 2 head color as R G B (default: 0 0 191)")
+prsr.add_argument("-S2C", "--snake2color", type=int, nargs=3, default=[0, 0, 127], help="Snake 2 body color as R G B (default: 0 0 127)")
 prsr.add_argument("-AC", "--applecolor", type=int, nargs=3, default=[255, 0, 0], help="Apple color as R G B (default: 255 0 0)")
 prsr.add_argument("-BC", "--bgcolor", type=int, nargs=3, default=[0, 0, 0], help="Background color as R G B (default: 0 0 0)")
 prsr.add_argument("-TC", "--textcolor", type=int, nargs=3, default=[127, 127, 127], help="Text color as R G B (default: 127 127 127)")
 prsr.add_argument("-WC", "--wallcolor", type=int, nargs=3, default=[255, 255, 255], help="Wall color as R G B, only applies in wall mode (default: 255 255 255)")
-prsr.add_argument("-ST", "--scoretext", default="Score: +s+", help="Score text with '+s+' as value (default: 'Score: ~s~')")
+prsr.add_argument("-STX", "--scoretext", default="Score: +s+", help="Score text with '+s+' as value (default: 'Score: +s+')")
+prsr.add_argument("-TTX", "--ticktext", default="Tick: +t+", help="Tick text with '+t+' as value (default: 'Tick: +t+')")
+prsr.add_argument("-TD", "--tickdecimals", type=int, default=3, help="How many decimals to show in the tick text (default: 3)")
 prsr.add_argument("-AA", "--appleamount", type=int, default=1, help="Amount of apples at once (default: 1)")
+prsr.add_argument("-DD", "--deathdelay", type=int, default=1000, help="Time of pause after snake death in milliseconds (default: 1000)")
 prsr.add_argument("-T", "--tick", type=float, default=0.1, help="Time between each game tick in seconds (default: 0.1)")
-prsr.add_argument("-P", "--preset", default="", help="Argument preset (default: None)")
+prsr.add_argument("-P", "--preset", default="", help="Load a preset of arguments (default: None)")
 prsr.add_argument("-GM", "--gamemods", nargs="*", default=[], help="Game modifers (default: None)")
 prsr.add_argument("-HS", "--hidescore", action="store_true", help="Hide score counter")
-prsr.add_argument("-DP", "--disablepause", action="store_true", help="Disable pausing the game")
+prsr.add_argument("-ST", "--showtick", action="store_true", help="Show current tick speed")
 args = prsr.parse_args()
 
 # load preset
 PR = args.preset
 if PR:
-    filename = PR if "." in PR else f"{PR}.skp"
-    with open(filename, "r") as f:
-        preset_args = f.read().split()
-    merged_args = preset_args + sys.argv[1:]
-    args = prsr.parse_args(merged_args)
-    
+    filen = PR if "." in PR else f"{PR}.skp"
+    with open(filen, "r") as f:
+        pargs = f.read().split()
+    margs = pargs + sys.argv[1:]
+    args = prsr.parse_args(margs)
 
-# settings
-#DB = args.debug
+# display settings
 DISPW, DISPH = args.displaysize
 GRIDW, GRIDH = args.gridsize
 TILEW, TILEH = DISPW // GRIDW, DISPH // GRIDH
+
+# game settings
+GMMDS = args.gamemods
+APLAMT = args.appleamount
+DIEDEL = args.deathdelay
+TWOP = "2player" in GMMDS
+
+# customization settings
 SNKHDCOL = args.snakeheadcolor
 SNKCOL = args.snakecolor
+SNK2HDCOL = args.snake2headcolor
+SNK2COL = args.snake2color
 APLCOL = args.applecolor
-APLAMT = args.appleamount
+WLLCOL = args.wallcolor
 BGCOL = args.bgcolor
 TXTCOL = args.textcolor
-WLLCOL = args.wallcolor
-SCTXT = args.scoretext
-GMMDS = args.gamemods
+PRTLCOLA = (0, 127, 255)
+PRTLCOLB = (255, 127, 0)
+TXT = args.scoretext + f", {args.ticktext}" if args.showtick else args.scoretext
 HDSCR = args.hidescore
-DISPSE = args.disablepause
+
+# misc settings
+#DB = args.debug
 
 # functions
 def restart():
-    global snk, snkdir, nextdir, apls, wlls, paused, scr, tick
+    global snk, snkdir, nextdir, snk2, snk2dir, nextdir2, apls, paused, scr, tick, wlls, prtl, prtls
     
     # reset game
     snk = [[GRIDW // 3, GRIDH // 2]]
-    snkdir = (1, 0)
+    snkdir = (1, 0) if not TWOP else (0, -1)
     nextdir = snkdir
+    if TWOP:
+        snk2 = [[GRIDW // 3 * 2, GRIDH // 2]]
+        snk2dir = (0, 1)
+        nextdir2 = snk2dir
     apls = [randPos() for _ in range(APLAMT)]
-    wlls = []
     paused = False
     scr = 0
     tick = args.tick
+    wlls = []
+    prtl = []
+    prtls = []
 def die():
-    time.sleep(1)
-    restart()
-def randPos(initial=False):
-    pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
-    if initial:
-        while pos == [GRIDW // 3, GRIDH // 2]:
-            pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
-        return pos
+    global run
+    
+    if not "1try" in GMMDS:
+        pygame.time.wait(DIEDEL)
+        restart()
     else:
-        while pos in snk or pos in apls or pos in wlls:
-            pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
-        return pos
+        run = False
+def randPos(initial=False):
+    # initial generation
+    pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
+            
+    # 2 player check
+    if not TWOP:
+        if initial:
+            while pos == [GRIDW // 3, GRIDH // 2]:
+                pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
+        else:
+            while pos in snk or pos in apls or pos in wlls or pos in prtl or pos in flattenTriSet(prtls):
+                pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
+    else:
+        if initial:
+            while pos not in [[GRIDW // 3, GRIDH // 2], [GRIDW // 3 * 2, GRIDH // 2]]:
+                pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
+        else:
+            while pos in snk or pos in snk2 or pos in apls or pos in wlls or pos in prtl or pos in flattenTriSet(prtls):
+                pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
+    return pos
+def randCol():
+    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+def flattenTriSet(triset):
+    flat = []
+    for _, pa, pb in triset:
+        flat.extend([pa, pb])
+    return flat
 
 # variables
 snk = [[GRIDW // 3, GRIDH // 2]]
-snkdir = (1, 0)
+snkdir = (1, 0) if not TWOP else (0, -1)
 nextdir = snkdir
+if TWOP:
+    snk2 = [[GRIDW // 3 * 2, GRIDH // 2]]
+    snk2dir = (0, 1)
+    nextdir2 = snk2dir
 apls = [randPos(True) for _ in range(APLAMT)]
 paused = False
 scr = 0
 tick = args.tick
 wlls = []
+prtl = []
+prtls = []
 
 # display
 screen = pygame.display.set_mode((DISPW, DISPH))
@@ -114,45 +162,92 @@ while run:
             if e.key == pygame.K_r:
                 restart()
                 
-            if not DISPSE:
+            if "nopause" not in GMMDS:
                 # pause
                 if e.key == pygame.K_SPACE:
                     paused = not paused
 
             # movement
             if not paused:
-                if e.key in (pygame.K_w, pygame.K_UP) and (snkdir[1] != 1 or len(snk) <= 1):
-                    nextdir = (0, -1)
-                elif e.key in (pygame.K_s, pygame.K_DOWN) and (snkdir[1] != -1 or len(snk) <= 1):
-                    nextdir = (0, 1)
-                elif e.key in (pygame.K_d, pygame.K_RIGHT) and (snkdir[0] != -1 or len(snk) <= 1):
-                    nextdir = (1, 0)
-                elif e.key in (pygame.K_a, pygame.K_LEFT) and (snkdir[0] != 1 or len(snk) <= 1):
-                    nextdir = (-1, 0)
+                if not TWOP:
+                    if e.key in (pygame.K_w, pygame.K_UP) and (snkdir[1] != 1 or len(snk) <= 1):
+                        nextdir = (0, -1)
+                    elif e.key in (pygame.K_s, pygame.K_DOWN) and (snkdir[1] != -1 or len(snk) <= 1):
+                        nextdir = (0, 1)
+                    elif e.key in (pygame.K_d, pygame.K_RIGHT) and (snkdir[0] != -1 or len(snk) <= 1):
+                        nextdir = (1, 0)
+                    elif e.key in (pygame.K_a, pygame.K_LEFT) and (snkdir[0] != 1 or len(snk) <= 1):
+                        nextdir = (-1, 0)
+                else:
+                    # snake 1
+                    if e.key == pygame.K_w and (snkdir[1] != 1 or len(snk) <= 1):
+                        nextdir = (0, -1)
+                    elif e.key == pygame.K_s and (snkdir[1] != -1 or len(snk) <= 1):
+                        nextdir = (0, 1)
+                    elif e.key == pygame.K_d and (snkdir[0] != -1 or len(snk) <= 1):
+                        nextdir = (1, 0)
+                    elif e.key == pygame.K_a and (snkdir[0] != 1 or len(snk) <= 1):
+                        nextdir = (-1, 0)
+                        
+                    # snake 2
+                    if e.key == pygame.K_UP and (snk2dir[1] != 1 or len(snk2) <= 1):
+                        nextdir2 = (0, -1)
+                    elif e.key == pygame.K_DOWN and (snk2dir[1] != -1 or len(snk2) <= 1):
+                        nextdir2 = (0, 1)
+                    elif e.key == pygame.K_RIGHT and (snk2dir[0] != -1 or len(snk2) <= 1):
+                        nextdir2 = (1, 0)
+                    elif e.key == pygame.K_LEFT and (snk2dir[0] != 1 or len(snk2) <= 1):
+                        nextdir2 = (-1, 0)
                 
     # update screen
     screen.fill(BGCOL)
+    
+    # snake(s)
     for i, pos in enumerate(snk):
         col = SNKHDCOL if i == 0 else SNKCOL
         pygame.draw.rect(screen, col, pygame.Rect(pos[0] * TILEW, pos[1] * TILEH, TILEW, TILEH))
+    if TWOP:
+        for j, pos2 in enumerate(snk2):
+            col = SNK2HDCOL if j == 0 else SNK2COL
+            pygame.draw.rect(screen, col, pygame.Rect(pos2[0] * TILEW, pos2[1] * TILEH, TILEW, TILEH))
+            
+    # apple
     for ax, ay in apls:
         pygame.draw.rect(screen, APLCOL, pygame.Rect(ax * TILEW, ay * TILEH, TILEW, TILEH))
+    
+    # walls
     for wx, wy in wlls:
         pygame.draw.rect(screen, WLLCOL, pygame.Rect(wx * TILEW, wy * TILEH, TILEW, TILEH))
+        
+    # portal
+    if prtl != []:
+        pygame.draw.rect(screen, PRTLCOLA, pygame.Rect(prtl[0][0] * TILEW, prtl[0][1] * TILEH, TILEW, TILEH))
+        pygame.draw.rect(screen, PRTLCOLB, pygame.Rect(prtl[1][0] * TILEW, prtl[1][1] * TILEH, TILEW, TILEH))
+        
+    # portals
+    if prtls != []:
+        for pcol, pa, pb in prtls:
+            pygame.draw.rect(screen, pcol, pygame.Rect(pa[0] * TILEW, pa[1] * TILEH, TILEW, TILEH))
+            pygame.draw.rect(screen, pcol, pygame.Rect(pb[0] * TILEW, pb[1] * TILEH, TILEW, TILEH))
+        
+    # score
     if not HDSCR:
-        screen.blit(font.render(SCTXT.replace("+s+", str(scr)), True, TXTCOL), (4, 4))
+        screen.blit(font.render(TXT.replace("+s+", str(scr)).replace("+t+", str(round(tick, args.tickdecimals))), True, TXTCOL), (4, 4))
     pygame.display.flip()
     
     # game loop
     if not paused:
         # update snake direction
         snkdir = nextdir
+        if TWOP: snk2dir = nextdir2
         
         # movement
         if "warp" in GMMDS:
             nh = [(snk[0][0] + snkdir[0]) % GRIDW, (snk[0][1] + snkdir[1]) % GRIDH]
+            if TWOP: nh2 = [(snk2[0][0] + snk2dir[0]) % GRIDW, (snk2[0][1] + snk2dir[1]) % GRIDH]
         else:
             nh = [snk[0][0] + snkdir[0], snk[0][1] + snkdir[1]]
+            if TWOP: nh2 = [snk2[0][0] + snk2dir[0], snk2[0][1] + snk2dir[1]]
     
         # apple check 
         if nh in apls:
@@ -165,14 +260,72 @@ while run:
                 tick *= 0.95
             if "teleport" in GMMDS:
                 nh = randPos()
+            if "portal" in GMMDS:
+                prtl = [randPos(), randPos()]
+            if "portals" in GMMDS:
+                prtls.append([randCol(), randPos(), randPos()])
         else:
             snk.pop()
+        if TWOP:
+            if nh2 in apls:
+                scr += 1
+                apls.remove(nh2)
+                apls.append(randPos())
+                if "wall" in GMMDS:
+                    wlls.append(randPos())
+                if "incspeed" in GMMDS:
+                    tick *= 0.95
+                if "teleport" in GMMDS:
+                    nh2 = randPos()
+                if "portal" in  GMMDS:
+                    prtl = [randPos(), randPos()]
+            else:
+                snk2.pop()
+            
+        # portal check
+        if prtl != []:
+            if nh == prtl[0]: nh = prtl[1]
+            elif nh == prtl[1]: nh = prtl[0]
+            if TWOP:
+                if nh2 == prtl[0]: nh2 = prtl[1]
+                elif nh2 == prtl[1]: nh2 = prtl[0]
+                
+        # portals check
+        for p in prtls:
+            if nh == p[1]: nh = p[2]
+            elif nh == p[2]: nh = p[1]
+            if TWOP:
+                if nh2 == p[1]: nh2 = p[2]
+                elif nh2 == p[2]: nh2 = [1]
         
         # snake death
-        if (nh in snk[1:] and "passthrough" not in GMMDS) or nh in wlls or not GRIDW > nh[0] > -1 or not GRIDH > nh[1] > -1:
-            die()
+        if not TWOP:
+            if ((nh in snk[1:] and "passthrough" not in GMMDS) or 
+            nh in wlls or 
+            not GRIDW > nh[0] > -1 or 
+            not GRIDH > nh[1] > -1):
+                die()
+            else:
+                snk.insert(0, nh)
         else:
-            snk.insert(0, nh)
+            if ((nh in snk[1:] and "passthrough" not in GMMDS) or 
+                (nh in snk2 and "2ppassthrough" not in GMMDS) or 
+                nh == nh2 or
+                nh in wlls or 
+                not GRIDW > nh[0] > -1 or 
+                not GRIDH > nh[1] > -1):
+                die()
+            else:
+                snk.insert(0, nh)
+            if ((nh2 in snk2[1:] and "passthrough" not in GMMDS) or 
+                (nh2 in snk and "2ppassthrough" not in GMMDS) or 
+                nh2 == nh or
+                nh2 in wlls or 
+                not GRIDW > nh2[0] > -1 or 
+                not GRIDH > nh2[1] > -1):
+                die()
+            else:
+                snk2.insert(0, nh2)
         
     # tick
     clock.tick(1 / tick)
