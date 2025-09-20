@@ -46,6 +46,7 @@ python snake.py [args]
   - Local multiplayer (2–4 players)
   - Flashlight / Spotlight modes
   - Portals
+  - Mirror
 - More customization
   - Player count
   - Score text options (size, font)
