@@ -18,6 +18,7 @@ python snake.py [args]
 |-|-|
 |1try|Closes the game upon death.|
 |2player|Two player cooperative mode.|
+|2ppassthrough|Allows 2 players to pass through each other.|
 |incspeed|Decrements the tick delay by 5% upon eating an apple.|
 |nopause|Disable the pause functionality.|
 |noreset|Disable the reset functionality.|
