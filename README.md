@@ -44,16 +44,12 @@ python snake.py [args]
 ## Planned Features
 - More game modifiers
   - Local multiplayer (2–4 players)
-  - Teleport
   - Flashlight / Spotlight modes
   - Portals
 - More customization
   - Player count
   - Score text options (size, font)
   - Keybinds
-- Customization GUI and presets
-  - Premade sets
-  - Custom sets
 - Sounds
 - Highscore system
   - Save highscores per customization set
