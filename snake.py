@@ -1,10 +1,11 @@
 import argparse
 import pygame
 import random
+import sys
 import time
 
 # made by las-r on github
-# v1.2.1
+# v1.3
 
 # init pygame
 pygame.init()
@@ -25,10 +26,21 @@ prsr.add_argument("-WC", "--wallcolor", type=int, nargs=3, default=[255, 255, 25
 prsr.add_argument("-ST", "--scoretext", default="Score: +s+", help="Score text with '+s+' as value (default: 'Score: ~s~')")
 prsr.add_argument("-AA", "--appleamount", type=int, default=1, help="Amount of apples at once (default: 1)")
 prsr.add_argument("-T", "--tick", type=float, default=0.1, help="Time between each game tick in seconds (default: 0.1)")
+prsr.add_argument("-P", "--preset", default="", help="Argument preset (default: None)")
 prsr.add_argument("-GM", "--gamemods", nargs="*", default=[], help="Game modifers (default: None)")
 prsr.add_argument("-HS", "--hidescore", action="store_true", help="Hide score counter")
 prsr.add_argument("-DP", "--disablepause", action="store_true", help="Disable pausing the game")
 args = prsr.parse_args()
+
+# load preset
+PR = args.preset
+if PR:
+    filename = PR if "." in PR else f"{PR}.skp"
+    with open(filename, "r") as f:
+        preset_args = f.read().split()
+    merged_args = preset_args + sys.argv[1:]
+    args = prsr.parse_args(merged_args)
+    
 
 # settings
 #DB = args.debug
@@ -79,10 +91,10 @@ snk = [[GRIDW // 3, GRIDH // 2]]
 snkdir = (1, 0)
 nextdir = snkdir
 apls = [randPos(True) for _ in range(APLAMT)]
-wlls = []
 paused = False
 scr = 0
 tick = args.tick
+wlls = []
 
 # display
 screen = pygame.display.set_mode((DISPW, DISPH))
@@ -93,7 +105,7 @@ run = True
 while run:
     # events
     for e in pygame.event.get():
-        if e.type == pygame.QUIT:
+        if e.type == pygame.QUIT: 
             run = False
         
         # key events
@@ -141,7 +153,6 @@ while run:
             nh = [(snk[0][0] + snkdir[0]) % GRIDW, (snk[0][1] + snkdir[1]) % GRIDH]
         else:
             nh = [snk[0][0] + snkdir[0], snk[0][1] + snkdir[1]]
-        snk.insert(0, nh)
     
         # apple check 
         if nh in apls:
@@ -152,12 +163,16 @@ while run:
                 wlls.append(randPos())
             if "incspeed" in GMMDS:
                 tick *= 0.95
+            if "teleport" in GMMDS:
+                nh = randPos()
         else:
             snk.pop()
         
         # snake death
         if (nh in snk[1:] and "passthrough" not in GMMDS) or nh in wlls or not GRIDW > nh[0] > -1 or not GRIDH > nh[1] > -1:
             die()
+        else:
+            snk.insert(0, nh)
         
     # tick
     clock.tick(1 / tick)
