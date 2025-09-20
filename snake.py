@@ -4,7 +4,7 @@ import random
 import sys
 
 # made by las-r on github
-# v1.4
+# v1.4.1
 
 # init pygame
 pygame.init()
@@ -158,9 +158,10 @@ while run:
         
         # key events
         if e.type == pygame.KEYDOWN:
-            # restart
-            if e.key == pygame.K_r:
-                restart()
+            if "noreset" not in GMMDS:
+                # restart
+                if e.key == pygame.K_r:
+                    restart()
                 
             if "nopause" not in GMMDS:
                 # pause
@@ -279,6 +280,8 @@ while run:
                     nh2 = randPos()
                 if "portal" in  GMMDS:
                     prtl = [randPos(), randPos()]
+                if "portals" in GMMDS:
+                    prtls.append([randCol(), randPos(), randPos()])
             else:
                 snk2.pop()
             
