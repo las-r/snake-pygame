@@ -33,7 +33,7 @@ python snake.py [args]
 |`--bgcolor`, `-BC`|3|Background color as R G B|Integer|`0 0 0`|
 |`--textcolor`, `-TC`|3|Text color as R G B|Integer|`127 127 127`|
 |`--wallcolor`, `-WC`|3|Wall color as R G B|Integer|`255 255 255`|
-|`--scoretext`, `-ST`|1|Score text with `+s+` as value|String|`Score: ~s~`|
+|`--scoretext`, `-ST`|1|Score text with `+s+` as value|String|`Score: +s+`|
 |`--appleamount`, `-AA`|1|Amount of apples at once|Integer|`1`|
 |`--tick`, `-T`|1|Time between each game tick in seconds|Float|`0.1`|
 |`--preset`, `-P`|1|Load a preset of arguments|String|`None`|
