@@ -20,6 +20,7 @@ python snake.py [args]
 |passthrough|Allows the snake to pass through itself.|
 |wall|Makes a wall spawn at a random location upon eating an apple.|
 |warp|Makes the borders teleport you to the other side.|
+|teleport|Makes apples teleport you to a random location.|
 
 ### Command Line Arguments
 |Argument|Subargument Amount|Description|Type|Default Value|
@@ -35,8 +36,10 @@ python snake.py [args]
 |`--scoretext`, `-ST`|1|Score text with `+s+` as value|String|`Score: ~s~`|
 |`--appleamount`, `-AA`|1|Amount of apples at once|Integer|`1`|
 |`--tick`, `-T`|1|Time between each game tick in seconds|Float|`0.1`|
+|`--preset`, `-P`|1|Load a preset of arguments|String|`None`|
 |`--gamemods`, `-GM`|*|Space-separated list of game modifers|String|`None`|
 |`--hidescore`, `-HS`|0|Hide score counter|Boolean|`False`|
+|`--disablepause`, `-DP`|0|Disable pausing the game|Boolean|`False`|
 
 ## Planned Features
 - More game modifiers
