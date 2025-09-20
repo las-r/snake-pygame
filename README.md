@@ -31,7 +31,7 @@ python snake.py [args]
 ### Command Line Arguments
 | Argument | Subargument Amount | Description | Type | Default Value |
 |----------|--------------------|-------------|------|---------------|
-| `--displaysize`, `-DS` | 2 | Display dimensions in pixels | Integer | `800 600` |
+| `--displaysize`, `-DS` | 2 | Display / window dimensions in pixels | Integer | `800 600` |
 | `--gridsize`, `-GS` | 2 | Game grid dimensions | Integer | `40 30` |
 | `--snakeheadcolor`, `-SHC` | 3 | Snake head color as R G B | Integer | `0 191 0` |
 | `--snakecolor`, `-SC` | 3 | Snake body color as R G B | Integer | `0 127 0` |
