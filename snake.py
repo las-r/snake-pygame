@@ -5,7 +5,7 @@ import random
 import sys
 
 # made by las-r on github
-# v1.5
+# v1.5.1
 
 # init pygame
 pygame.init()
@@ -140,12 +140,13 @@ def flattenTriSet(triset):
         flat.extend([pa, pb])
     return flat
 def saveHs():
-    if DB > 1: print(f"Saving highscore: {hscr}")
-    with open("data.skd", "r", encoding="utf-8") as d:
-        data = json.load(d)
-    data["hscrs"][argstr] = hscr
-    with open("data.skd", "w", encoding="utf-8") as dw:
-        json.dump(data, dw, indent=4)
+    if "dontsavehs" not in GMMDS:
+        if DB > 1: print(f"Saving highscore: {hscr}")
+        with open("data.skd", "r", encoding="utf-8") as d:
+            data = json.load(d)
+        data["hscrs"][argstr] = hscr
+        with open("data.skd", "w", encoding="utf-8") as dw:
+            json.dump(data, dw, indent=4)
 
 # variables
 snk = [[GRIDW // 3, GRIDH // 2]]
