@@ -1,10 +1,11 @@
 import argparse
+import json
 import pygame
 import random
 import sys
 
 # made by las-r on github
-# v1.4.1
+# v1.5
 
 # init pygame
 pygame.init()
@@ -13,7 +14,7 @@ clock = pygame.time.Clock()
 
 # arg parser
 prsr = argparse.ArgumentParser(prog="Snake", description="Simple snake game written in Python")
-#prsr.add_argument("-D", "--debug", type=int, default=0, help="Debug level (default: 0)")
+prsr.add_argument("-D", "--debug", type=int, default=0, help="Debug output level (default: 0)")
 prsr.add_argument("-DS", "--displaysize", type=int, nargs=2, default=[800, 600], help="Display dimensions in pixels (default: 800 600)")
 prsr.add_argument("-GS", "--gridsize", type=int, nargs=2, default=[40, 30], help="Game grid dimensions (default: 40 30)")
 prsr.add_argument("-SHC", "--snakeheadcolor", type=int, nargs=3, default=[0, 191, 0], help="Snake head color as R G B (default: 0 191 0)")
@@ -25,6 +26,7 @@ prsr.add_argument("-BC", "--bgcolor", type=int, nargs=3, default=[0, 0, 0], help
 prsr.add_argument("-TC", "--textcolor", type=int, nargs=3, default=[127, 127, 127], help="Text color as R G B (default: 127 127 127)")
 prsr.add_argument("-WC", "--wallcolor", type=int, nargs=3, default=[255, 255, 255], help="Wall color as R G B, only applies in wall mode (default: 255 255 255)")
 prsr.add_argument("-STX", "--scoretext", default="Score: +s+", help="Score text with '+s+' as value (default: 'Score: +s+')")
+prsr.add_argument("-HSTX", "--highscoretext", default="Highscore: +h+", help="Highscore text with '+h+' as value (default: 'Highscore: +h+')")
 prsr.add_argument("-TTX", "--ticktext", default="Tick: +t+", help="Tick text with '+t+' as value (default: 'Tick: +t+')")
 prsr.add_argument("-TD", "--tickdecimals", type=int, default=3, help="How many decimals to show in the tick text (default: 3)")
 prsr.add_argument("-AA", "--appleamount", type=int, default=1, help="Amount of apples at once (default: 1)")
@@ -33,8 +35,14 @@ prsr.add_argument("-T", "--tick", type=float, default=0.1, help="Time between ea
 prsr.add_argument("-P", "--preset", default="", help="Load a preset of arguments (default: None)")
 prsr.add_argument("-GM", "--gamemods", nargs="*", default=[], help="Game modifers (default: None)")
 prsr.add_argument("-HS", "--hidescore", action="store_true", help="Hide score counter")
+prsr.add_argument("-HHS", "--hidehighscore", action="store_true", help="Hide highscore")
 prsr.add_argument("-ST", "--showtick", action="store_true", help="Show current tick speed")
+prsr.add_argument("-RS", "--randomseed", type=float, default=None, help="RNG seed (default: None)")
 args = prsr.parse_args()
+
+# load random seed
+if args.randomseed != None:
+    random.seed(args.randomseed)
 
 # load preset
 PR = args.preset
@@ -67,17 +75,20 @@ BGCOL = args.bgcolor
 TXTCOL = args.textcolor
 PRTLCOLA = (0, 127, 255)
 PRTLCOLB = (255, 127, 0)
-TXT = args.scoretext + f", {args.ticktext}" if args.showtick else args.scoretext
+TXT = args.scoretext
+if not args.hidehighscore: TXT += f", {args.highscoretext}"
+if args.showtick: TXT += f", {args.ticktext}"
 HDSCR = args.hidescore
 
 # misc settings
-#DB = args.debug
+DB = args.debug
 
 # functions
 def restart():
     global snk, snkdir, nextdir, snk2, snk2dir, nextdir2, apls, paused, scr, tick, wlls, prtl, prtls
     
     # reset game
+    if DB > 1: print(f"Game has been restarted")
     snk = [[GRIDW // 3, GRIDH // 2]]
     snkdir = (1, 0) if not TWOP else (0, -1)
     nextdir = snkdir
@@ -94,7 +105,8 @@ def restart():
     prtls = []
 def die():
     global run
-    
+
+    if DB > 1: print(f"Snake death has occurred")
     if not "1try" in GMMDS:
         pygame.time.wait(DIEDEL)
         restart()
@@ -127,6 +139,13 @@ def flattenTriSet(triset):
     for _, pa, pb in triset:
         flat.extend([pa, pb])
     return flat
+def saveHs():
+    if DB > 1: print(f"Saving highscore: {hscr}")
+    with open("data.skd", "r", encoding="utf-8") as d:
+        data = json.load(d)
+    data["hscrs"][argstr] = hscr
+    with open("data.skd", "w", encoding="utf-8") as dw:
+        json.dump(data, dw, indent=4)
 
 # variables
 snk = [[GRIDW // 3, GRIDH // 2]]
@@ -139,10 +158,37 @@ if TWOP:
 apls = [randPos(True) for _ in range(APLAMT)]
 paused = False
 scr = 0
+hscr = 0
 tick = args.tick
 wlls = []
 prtl = []
 prtls = []
+argstr = " ".join(sys.argv[1:])
+
+# load highscore
+if "dontsavehs" not in GMMDS:
+    try:
+        with open("data.skd", "r", encoding="utf-8") as d:
+            data = json.load(d)
+    except FileNotFoundError:
+        data = {"hscrs": {}}
+    except json.JSONDecodeError:
+        print("Error: invalid format in data.skd — resetting")
+        data = {"hscrs": {}}
+    if "hscrs" not in data:
+        data["hscrs"] = {}
+    if argstr not in data["hscrs"]:
+        data["hscrs"][argstr] = 0
+        with open("data.skd", "w", encoding="utf-8") as dw:
+            json.dump(data, dw, indent=4)
+    hscr = data["hscrs"][argstr]
+    
+if DB > 0:
+    print(f"Arguments: {sys.argv[1:]}")
+    print(f"Arguments String: {argstr}")
+    print(f"Game modifers: {GMMDS}")
+    print(f"Random seed (if any): {args.randomseed}")
+    print(f"Highscore: {hscr}")
 
 # display
 screen = pygame.display.set_mode((DISPW, DISPH))
@@ -162,12 +208,18 @@ while run:
                 # restart
                 if e.key == pygame.K_r:
                     restart()
-                
+                    
             if "nopause" not in GMMDS:
                 # pause
                 if e.key == pygame.K_SPACE:
                     paused = not paused
-
+                    if DB > 1: print(f"Game pause state: {paused}")
+            
+            if "dontsavehs" not in GMMDS:
+                # pause
+                if e.key == pygame.K_h:
+                    saveHs()
+            
             # movement
             if not paused:
                 if not TWOP:
@@ -233,7 +285,7 @@ while run:
         
     # score
     if not HDSCR:
-        screen.blit(font.render(TXT.replace("+s+", str(scr)).replace("+t+", str(round(tick, args.tickdecimals))), True, TXTCOL), (4, 4))
+        screen.blit(font.render(TXT.replace("+s+", str(scr)).replace("+t+", str(round(tick, args.tickdecimals))).replace("+h+", str(hscr)), True, TXTCOL), (4, 4))
     pygame.display.flip()
     
     # game loop
@@ -245,14 +297,22 @@ while run:
         # movement
         if "warp" in GMMDS:
             nh = [(snk[0][0] + snkdir[0]) % GRIDW, (snk[0][1] + snkdir[1]) % GRIDH]
-            if TWOP: nh2 = [(snk2[0][0] + snk2dir[0]) % GRIDW, (snk2[0][1] + snk2dir[1]) % GRIDH]
+            if DB > 2: print(f"Snake 1 has moved to {nh}")
+            if TWOP: 
+                nh2 = [(snk2[0][0] + snk2dir[0]) % GRIDW, (snk2[0][1] + snk2dir[1]) % GRIDH]
+                if DB > 2: print(f"Snake 2 has moved to {nh2}")
         else:
             nh = [snk[0][0] + snkdir[0], snk[0][1] + snkdir[1]]
-            if TWOP: nh2 = [snk2[0][0] + snk2dir[0], snk2[0][1] + snk2dir[1]]
+            if DB > 2: print(f"Snake 1 has moved to {nh}")
+            if TWOP: 
+                nh2 = [snk2[0][0] + snk2dir[0], snk2[0][1] + snk2dir[1]]
+                if DB > 2: print(f"Snake 2 has moved to {nh2}")
     
         # apple check 
         if nh in apls:
+            if DB > 1: print(f"Apple has been eaten at {nh} by Snake 1")
             scr += 1
+            if scr > hscr: hscr = scr
             apls.remove(nh)
             apls.append(randPos())
             if "wall" in GMMDS:
@@ -269,7 +329,9 @@ while run:
             snk.pop()
         if TWOP:
             if nh2 in apls:
+                if DB > 1: print(f"Apple has been eaten at {nh2} by Snake 2")
                 scr += 1
+                if scr > hscr: hscr = scr
                 apls.remove(nh2)
                 apls.append(randPos())
                 if "wall" in GMMDS:
@@ -333,5 +395,7 @@ while run:
     # tick
     clock.tick(1 / tick)
             
-# quit
+# save and quit
+if DB > 1: print("Game has been quit")
+saveHs()
 pygame.quit()
