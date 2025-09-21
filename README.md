@@ -10,28 +10,31 @@ python snake.py [args]
 
 ### Gameplay
 - **WASD / Arrow keys**: move the snake
-- **R**: restart (unless disabled) 
-- **Space**: pause/unpause (unless disabled) 
+- **R**: restart (unless disabled)
+- **Space**: pause/unpause (unless disabled)
+- **H**: save highscore (unless disabled)
 
 ### Game Modifiers
-|Modifier|Effect|
-|-|-|
-|1try|Closes the game upon death.|
-|2player|Two player cooperative mode.|
-|2ppassthrough|Allows 2 players to pass through each other.|
-|incspeed|Decrements the tick delay by 5% upon eating an apple.|
-|nopause|Disable the pause functionality.|
-|noreset|Disable the reset functionality.|
-|passthrough|Allows the snake to pass through itself.|
-|portal|Changes location of a portal upon eating an apple.|
-|portals|Spawns a new portal upon eating an apple.|
-|wall|Makes a wall spawn at a random location upon eating an apple.|
-|warp|Makes the borders teleport you to the other side.|
-|teleport|Makes apples teleport you to a random location.|
+| Modifier | Effect |
+|----------|--------|
+| 1try | Closes the game upon death. |
+| 2player | Two player cooperative mode. |
+| 2ppassthrough | Allows 2 players to pass through each other. |
+| dontsavehs | Disables highscore saving. |
+| incspeed | Decrements the tick delay by 5% upon eating an apple. |
+| nopause | Disable the pause functionality. |
+| noreset | Disable the reset functionality. |
+| passthrough | Allows the snake to pass through itself. |
+| portal | Changes location of a portal upon eating an apple. |
+| portals | Spawns a new portal upon eating an apple. |
+| wall | Makes a wall spawn at a random location upon eating an apple. |
+| warp | Makes the borders teleport you to the other side. |
+| teleport | Makes apples teleport you to a random location. |
 
 ### Command Line Arguments
 | Argument | Subargument Amount | Description | Type | Default Value |
 |----------|--------------------|-------------|------|---------------|
+| `--debug`, `-D` | 1 | Debug output level | Integer | `0` |
 | `--displaysize`, `-DS` | 2 | Display / window dimensions in pixels | Integer | `800 600` |
 | `--gridsize`, `-GS` | 2 | Game grid dimensions | Integer | `40 30` |
 | `--snakeheadcolor`, `-SHC` | 3 | Snake head color as R G B | Integer | `0 191 0` |
@@ -43,6 +46,7 @@ python snake.py [args]
 | `--textcolor`, `-TC` | 3 | Text color as R G B | Integer | `127 127 127` |
 | `--wallcolor`, `-WC` | 3 | Wall color as R G B (only in wall mode) | Integer | `255 255 255` |
 | `--scoretext`, `-STX` | 1 | Score text with `+s+` as value | String | `Score: +s+` |
+| `--scoretext`, `-HSTX` | 1 | Highscore text with `+h+` as value | String | `Highscore: +h+` |
 | `--ticktext`, `-TTX` | 1 | Tick text with `+t+` as value | String | `Tick: +t+` |
 | `--tickdecimals`, `-TD` | 1 | How many decimals to show in tick text | Integer | `3` |
 | `--appleamount`, `-AA` | 1 | Amount of apples at once | Integer | `1` |
@@ -51,7 +55,9 @@ python snake.py [args]
 | `--preset`, `-P` | 1 | Load a preset of arguments | String | `None` |
 | `--gamemods`, `-GM` | * | Space-separated list of game modifiers | String | `None` |
 | `--hidescore`, `-HS` | 0 | Hide score counter | Boolean | `False` |
+| `--hidescore`, `-HHS` | 0 | Hide highscore | Boolean | `False` |
 | `--showtick`, `-ST` | 0 | Show current tick speed | Boolean | `False` |
+| `--randomseed`, `-RS` | 1 | RNG seed | Float | `None` |
 
 ### Presets
 Presets are a way to store a set of command line arguments so you don't have to type it all in each time you want to play the game.
@@ -73,12 +79,14 @@ python snake.py -P lightspeed
 - More game modifiers
   - Flashlight / Spotlight modes
   - Mirror
+  - Shedding
 - More customization
-  - Player count
   - Score text options (size, font)
   - Keybinds
+- Customization GUI
 - Sounds
-- Highscore system
-  - Save highscores per customization set
-- Debug mode
+- Better graphics
+- Multiplayer improvements
+  - Cooperative and competitive modes
+  - Online multiplayer?
 - Config file?
