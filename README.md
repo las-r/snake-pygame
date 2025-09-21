@@ -75,6 +75,11 @@ cmd:
 python snake.py -P lightspeed
 ```
 
+### Data Storage
+Data is stored in `data.skd` in the same folder as `snake.py`.
+
+The file is simply a JSON file with a list of arguments sets and highscore values for each.
+
 ## Planned Features
 - More game modifiers
   - Flashlight / Spotlight modes
@@ -86,6 +91,7 @@ python snake.py -P lightspeed
 - Customization GUI
 - Sounds
 - Better graphics
+- Better highscore storing
 - Multiplayer improvements
   - Cooperative and competitive modes
   - Online multiplayer?
