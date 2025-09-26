@@ -5,7 +5,7 @@ import random
 import sys
 
 # made by las-r on github
-# v1.5.1
+# v1.6
 
 # init pygame
 pygame.init()
@@ -24,7 +24,10 @@ prsr.add_argument("-S2C", "--snake2color", type=int, nargs=3, default=[0, 0, 127
 prsr.add_argument("-AC", "--applecolor", type=int, nargs=3, default=[255, 0, 0], help="Apple color as R G B (default: 255 0 0)")
 prsr.add_argument("-BC", "--bgcolor", type=int, nargs=3, default=[0, 0, 0], help="Background color as R G B (default: 0 0 0)")
 prsr.add_argument("-TC", "--textcolor", type=int, nargs=3, default=[127, 127, 127], help="Text color as R G B (default: 127 127 127)")
-prsr.add_argument("-WC", "--wallcolor", type=int, nargs=3, default=[255, 255, 255], help="Wall color as R G B, only applies in wall mode (default: 255 255 255)")
+prsr.add_argument("-WC", "--wallcolor", type=int, nargs=3, default=[255, 255, 255], help="Wall color as R G B, only applies in wall mod (default: 255 255 255)")
+prsr.add_argument("-PAC", "--portalacolor", type=int, nargs=3, default=[0, 127, 255], help="Portal A color as R G B, only applies in portal mod (default: 0 127 255)")
+prsr.add_argument("-PBC", "--portalbcolor", type=int, nargs=3, default=[255, 127, 0], help="Portal B color as R G B, only applies in portal mod (default: 255 127 0)")
+prsr.add_argument("-SSC", "--shedskincolor", type=int, nargs=3, default=[120, 120, 120], help="Shed skin color as R G B, only applies in shedding mod (default: 128 191 128)")
 prsr.add_argument("-STX", "--scoretext", default="Score: +s+", help="Score text with '+s+' as value (default: 'Score: +s+')")
 prsr.add_argument("-HSTX", "--highscoretext", default="Highscore: +h+", help="Highscore text with '+h+' as value (default: 'Highscore: +h+')")
 prsr.add_argument("-TTX", "--ticktext", default="Tick: +t+", help="Tick text with '+t+' as value (default: 'Tick: +t+')")
@@ -73,8 +76,9 @@ APLCOL = args.applecolor
 WLLCOL = args.wallcolor
 BGCOL = args.bgcolor
 TXTCOL = args.textcolor
-PRTLCOLA = (0, 127, 255)
-PRTLCOLB = (255, 127, 0)
+PRTLCOLA = args.portalacolor
+PRTLCOLB = args.portalbcolor
+SSCOL = args.shedskincolor
 TXT = args.scoretext
 if not args.hidehighscore: TXT += f", {args.highscoretext}"
 if args.showtick: TXT += f", {args.ticktext}"
@@ -85,7 +89,7 @@ DB = args.debug
 
 # functions
 def restart():
-    global snk, snkdir, nextdir, snk2, snk2dir, nextdir2, apls, paused, scr, tick, wlls, prtl, prtls
+    global snk, snkdir, nextdir, snk2, snk2dir, nextdir2, apls, paused, scr, tick, wlls, prtl, prtls, shedskin
     
     # reset game
     if DB > 1: print(f"Game has been restarted")
@@ -103,6 +107,7 @@ def restart():
     wlls = []
     prtl = []
     prtls = []
+    shedskin = []
 def die():
     global run
 
@@ -122,14 +127,14 @@ def randPos(initial=False):
             while pos == [GRIDW // 3, GRIDH // 2]:
                 pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
         else:
-            while pos in snk or pos in apls or pos in wlls or pos in prtl or pos in flattenTriSet(prtls):
+            while pos in snk or pos in apls or pos in wlls or pos in prtl or pos in flattenTriSet(prtls) or pos in shedskin:
                 pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
     else:
         if initial:
             while pos not in [[GRIDW // 3, GRIDH // 2], [GRIDW // 3 * 2, GRIDH // 2]]:
                 pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
         else:
-            while pos in snk or pos in snk2 or pos in apls or pos in wlls or pos in prtl or pos in flattenTriSet(prtls):
+            while pos in snk or pos in snk2 or pos in apls or pos in wlls or pos in prtl or pos in flattenTriSet(prtls) or pos in shedskin:
                 pos = [random.randint(0, GRIDW - 1), random.randint(0, GRIDH - 1)]
     return pos
 def randCol():
@@ -164,6 +169,7 @@ tick = args.tick
 wlls = []
 prtl = []
 prtls = []
+shedskin = []
 argstr = " ".join(sys.argv[1:])
 
 # load highscore
@@ -279,10 +285,13 @@ while run:
         pygame.draw.rect(screen, PRTLCOLB, pygame.Rect(prtl[1][0] * TILEW, prtl[1][1] * TILEH, TILEW, TILEH))
         
     # portals
-    if prtls != []:
-        for pcol, pa, pb in prtls:
-            pygame.draw.rect(screen, pcol, pygame.Rect(pa[0] * TILEW, pa[1] * TILEH, TILEW, TILEH))
-            pygame.draw.rect(screen, pcol, pygame.Rect(pb[0] * TILEW, pb[1] * TILEH, TILEW, TILEH))
+    for pcol, pa, pb in prtls:
+        pygame.draw.rect(screen, pcol, pygame.Rect(pa[0] * TILEW, pa[1] * TILEH, TILEW, TILEH))
+        pygame.draw.rect(screen, pcol, pygame.Rect(pb[0] * TILEW, pb[1] * TILEH, TILEW, TILEH))
+            
+    # shedskin
+    for sx, sy in shedskin:
+        pygame.draw.rect(screen, SSCOL, pygame.Rect(sx * TILEW, sy * TILEH, TILEW, TILEH))
         
     # score
     if not HDSCR:
@@ -326,6 +335,12 @@ while run:
                 prtl = [randPos(), randPos()]
             if "portals" in GMMDS:
                 prtls.append([randCol(), randPos(), randPos()])
+            if "shedding" in GMMDS:
+                if shedskin != []:
+                    for _ in range(len(shedskin) // 3):
+                        shedskin.remove(random.choice(shedskin))
+                for s in snk[1:]:
+                    shedskin.append(s)
         else:
             snk.pop()
         if TWOP:
@@ -368,6 +383,7 @@ while run:
         if not TWOP:
             if ((nh in snk[1:] and "passthrough" not in GMMDS) or 
             nh in wlls or 
+            nh in shedskin or
             not GRIDW > nh[0] > -1 or 
             not GRIDH > nh[1] > -1):
                 die()
@@ -378,6 +394,7 @@ while run:
                 (nh in snk2 and "2ppassthrough" not in GMMDS) or 
                 nh == nh2 or
                 nh in wlls or 
+                nh in shedskin or
                 not GRIDW > nh[0] > -1 or 
                 not GRIDH > nh[1] > -1):
                 die()
@@ -387,6 +404,7 @@ while run:
                 (nh2 in snk and "2ppassthrough" not in GMMDS) or 
                 nh2 == nh or
                 nh2 in wlls or 
+                nh2 in shedskin or
                 not GRIDW > nh2[0] > -1 or 
                 not GRIDH > nh2[1] > -1):
                 die()
