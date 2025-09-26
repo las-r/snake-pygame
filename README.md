@@ -1,98 +1,98 @@
 <img width="512" alt="Screenshot showing the game." src="https://github.com/user-attachments/assets/d35c09bf-fa54-47f5-9e36-3511b58303df" />
 
 # Snake Pygame
-A simple snake game written in Python.
+A simple and customizable snake game written in Python.
 
 ## Usage
-```
+```bash
 python snake.py [args]
 ```
 
-### Gameplay
+## Gameplay
 - **WASD / Arrow keys**: move the snake
+  - In 2-player mode: WASD controls Snake 1, Arrow Keys control Snake 2
 - **R**: restart (unless disabled)
 - **Space**: pause/unpause (unless disabled)
 - **H**: save highscore (unless disabled)
 
-### Game Modifiers
-| Modifier | Effect |
-|----------|--------|
-| 1try | Closes the game upon death. |
-| 2player | Two player cooperative mode. |
-| 2ppassthrough | Allows 2 players to pass through each other. |
-| dontsavehs | Disables highscore saving. |
-| incspeed | Decrements the tick delay by 5% upon eating an apple. |
-| nopause | Disable the pause functionality. |
-| noreset | Disable the reset functionality. |
-| passthrough | Allows the snake to pass through itself. |
-| portal | Changes location of a portal upon eating an apple. |
-| portals | Spawns a new portal upon eating an apple. |
-| wall | Makes a wall spawn at a random location upon eating an apple. |
-| warp | Makes the borders teleport you to the other side. |
-| teleport | Makes apples teleport you to a random location. |
+## Game Modifiers
+| Modifier        | Effect                                                           |
+| --------------- | ---------------------------------------------------------------- |
+| `1try`          | Closes the game upon death.                                      |
+| `2player`       | Enables two-player cooperative mode.                             |
+| `2ppassthrough` | Allows both players to pass through each other.                  |
+| `dontsavehs`    | Disables highscore saving.                                       |
+| `incspeed`      | Snake speed increases (tick reduced by 5%) after each apple.     |
+| `nopause`       | Disables pause functionality.                                    |
+| `noreset`       | Disables restart functionality.                                  |
+| `passthrough`   | Snake can pass through its own body.                             |
+| `portal`        | Spawns a paired portal when an apple is eaten.                   |
+| `portals`       | Spawns additional random-colored portals upon eating apples.     |
+| `wall`          | Spawns a wall block at a random location when an apple is eaten. |
+| `warp`          | Borders wrap around instead of killing the snake.                |
+| `teleport`      | Eating an apple teleports the snake’s head to a random location. |
+| `shedding`      | Snake leaves behind "shed skin" blocks as obstacles.             |
 
-### Command Line Arguments
-| Argument | Subargument Amount | Description | Type | Default Value |
-|----------|--------------------|-------------|------|---------------|
-| `--debug`, `-D` | 1 | Debug output level | Integer | `0` |
-| `--displaysize`, `-DS` | 2 | Display / window dimensions in pixels | Integer | `800 600` |
-| `--gridsize`, `-GS` | 2 | Game grid dimensions | Integer | `40 30` |
-| `--snakeheadcolor`, `-SHC` | 3 | Snake head color as R G B | Integer | `0 191 0` |
-| `--snakecolor`, `-SC` | 3 | Snake body color as R G B | Integer | `0 127 0` |
-| `--snake2headcolor`, `-S2HC` | 3 | Snake 2 head color as R G B | Integer | `0 0 191` |
-| `--snake2color`, `-S2C` | 3 | Snake 2 body color as R G B | Integer | `0 0 127` |
-| `--applecolor`, `-AC` | 3 | Apple color as R G B | Integer | `255 0 0` |
-| `--bgcolor`, `-BC` | 3 | Background color as R G B | Integer | `0 0 0` |
-| `--textcolor`, `-TC` | 3 | Text color as R G B | Integer | `127 127 127` |
-| `--wallcolor`, `-WC` | 3 | Wall color as R G B (only in wall mode) | Integer | `255 255 255` |
-| `--scoretext`, `-STX` | 1 | Score text with `+s+` as value | String | `Score: +s+` |
-| `--scoretext`, `-HSTX` | 1 | Highscore text with `+h+` as value | String | `Highscore: +h+` |
-| `--ticktext`, `-TTX` | 1 | Tick text with `+t+` as value | String | `Tick: +t+` |
-| `--tickdecimals`, `-TD` | 1 | How many decimals to show in tick text | Integer | `3` |
-| `--appleamount`, `-AA` | 1 | Amount of apples at once | Integer | `1` |
-| `--deathdelay`, `-DD` | 1 | Pause after snake death (ms) | Integer | `1000` |
-| `--tick`, `-T` | 1 | Time between each game tick (seconds) | Float | `0.1` |
-| `--preset`, `-P` | 1 | Load a preset of arguments | String | `None` |
-| `--gamemods`, `-GM` | * | Space-separated list of game modifiers | String | `None` |
-| `--hidescore`, `-HS` | 0 | Hide score counter | Boolean | `False` |
-| `--hidescore`, `-HHS` | 0 | Hide highscore | Boolean | `False` |
-| `--showtick`, `-ST` | 0 | Show current tick speed | Boolean | `False` |
-| `--randomseed`, `-RS` | 1 | RNG seed | Float | `None` |
+## Command Line Arguments
+| Argument            | Short   | Values | Description                        | Default            |
+| ------------------- | ------- | ------ | ---------------------------------- | ------------------ |
+| `--debug`           | `-D`    | int    | Debug output level                 | `0`                |
+| `--displaysize`     | `-DS`   | 2 ints | Display dimensions in pixels       | `800 600`          |
+| `--gridsize`        | `-GS`   | 2 ints | Grid dimensions                    | `40 30`            |
+| `--snakeheadcolor`  | `-SHC`  | 3 ints | Snake 1 head color (R G B)         | `0 191 0`          |
+| `--snakecolor`      | `-SC`   | 3 ints | Snake 1 body color (R G B)         | `0 127 0`          |
+| `--snake2headcolor` | `-S2HC` | 3 ints | Snake 2 head color (R G B)         | `0 0 191`          |
+| `--snake2color`     | `-S2C`  | 3 ints | Snake 2 body color (R G B)         | `0 0 127`          |
+| `--applecolor`      | `-AC`   | 3 ints | Apple color (R G B)                | `255 0 0`          |
+| `--bgcolor`         | `-BC`   | 3 ints | Background color (R G B)           | `0 0 0`            |
+| `--textcolor`       | `-TC`   | 3 ints | Text color (R G B)                 | `127 127 127`      |
+| `--wallcolor`       | `-WC`   | 3 ints | Wall color (R G B)                 | `255 255 255`      |
+| `--portalacolor`    | `-PAC`  | 3 ints | Portal A color (R G B)             | `0 127 255`        |
+| `--portalbcolor`    | `-PBC`  | 3 ints | Portal B color (R G B)             | `255 127 0`        |
+| `--shedskincolor`   | `-SSC`  | 3 ints | Shed skin color (R G B)            | `120 120 120`      |
+| `--scoretext`       | `-STX`  | str    | Score text (`+s+` = score)         | `"Score: +s+"`     |
+| `--highscoretext`   | `-HSTX` | str    | Highscore text (`+h+` = highscore) | `"Highscore: +h+"` |
+| `--ticktext`        | `-TTX`  | str    | Tick text (`+t+` = tick speed)     | `"Tick: +t+"`      |
+| `--tickdecimals`    | `-TD`   | int    | Decimals to show in tick text      | `3`                |
+| `--appleamount`     | `-AA`   | int    | Number of apples at once           | `1`                |
+| `--deathdelay`      | `-DD`   | int    | Pause after snake death (ms)       | `1000`             |
+| `--tick`            | `-T`    | float  | Time between ticks (seconds)       | `0.1`              |
+| `--preset`          | `-P`    | str    | Load preset file                   | `""`               |
+| `--gamemods`        | `-GM`   | list   | Space-separated list of modifiers  | `[]`               |
+| `--hidescore`       | `-HS`   | flag   | Hide score counter                 | `False`            |
+| `--hidehighscore`   | `-HHS`  | flag   | Hide highscore display             | `False`            |
+| `--showtick`        | `-ST`   | flag   | Show tick speed                    | `False`            |
+| `--randomseed`      | `-RS`   | float  | RNG seed                           | `None`             |
 
-### Presets
-Presets are a way to store a set of command line arguments so you don't have to type it all in each time you want to play the game.
+## Presets
+Presets are saved argument sets in plaintext files (`.skp` recommended).
+If no extension is given, `.skp` is assumed.
 
-It's very easy to make a preset. Just put the command line arguments in a plaintext file.
-
-The file extension for presets is `.skp`. Using this extension will allow you to only type in the preset name, not the file extension. You don't *need* to use the extension to get a functioning preset, but it's recommended you do.
-
-**Example**
+**Example preset file:**
+```txt
+# lightspeed.skp
+-GM incspeed warp passthrough teleport shedding -AA 25 -T 0.05 -ST -TD 5
 ```
-lightspeed.skp:
--GM incspeed warp passthrough teleport -AA 25 -T 0.05 -ST -TD 5
 
-cmd:
+**Run with preset:**
+```bash
 python snake.py -P lightspeed
 ```
 
-### Data Storage
-Data is stored in `data.skd` in the same folder as `snake.py`.
-
-The file is simply a JSON file with a list of arguments sets and highscore values for each.
+## Data Storage
+- Highscores and settings are stored in `data.skd` (JSON format).
+- Each unique set of arguments has its own highscore entry.
 
 ## Planned Features
-- More game modifiers
-  - Flashlight / Spotlight modes
+- More modifiers
+  - Spotlight
   - Mirror
-  - Shedding
-- More customization
-  - Score text options (size, font)
-  - Keybinds
-- Customization GUI
-- Sounds
+- GUI-based customization
+- Sound effects
 - Better graphics
-- Better highscore storing
-- Multiplayer improvements
-  - Cooperative and competitive modes
-  - Online multiplayer?
-- Config file?
+- Smarter highscore system
+- Better multiplayer
+  - Online?
+  - Competitive and cooperative modes
+- Config file support
+- Better presets
